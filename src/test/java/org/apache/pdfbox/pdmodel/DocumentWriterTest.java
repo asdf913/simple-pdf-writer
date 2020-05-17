@@ -260,7 +260,7 @@ class DocumentWriterTest {
 	void testCreateProtectionPolicy() throws Throwable {
 		//
 		Assertions.assertEquals(
-				"StandardProtectionPolicy[permissions=<null>,ownerPassword=<null>,userPassword=<null>,preferAES=true,encryptionKeyLength=128]",
+				"StandardProtectionPolicy[ownerPassword=<null>,permissions=<null>,preferAES=true,userPassword=<null>,encryptionKeyLength=128]",
 				ToStringBuilder.reflectionToString(createProtectionPolicy(null, null, null),
 						ToStringStyle.SHORT_PREFIX_STYLE));
 		//
@@ -268,8 +268,8 @@ class DocumentWriterTest {
 		final AccessPermission accessPermission = new AccessPermission();
 		//
 		Assertions.assertEquals(String.format(
-				"StandardProtectionPolicy[permissions=%3$s,ownerPassword=%1$s,userPassword=%2$s,preferAES=true,encryptionKeyLength=128]",
-				OWNER_PASSWORD, userPassword, accessPermission),
+				"StandardProtectionPolicy[ownerPassword=%1$s,permissions=%2$s,preferAES=true,userPassword=%3$s,encryptionKeyLength=128]",
+				OWNER_PASSWORD, accessPermission, userPassword),
 				ToStringBuilder.reflectionToString(
 						createProtectionPolicy(OWNER_PASSWORD, userPassword, accessPermission),
 						ToStringStyle.SHORT_PREFIX_STYLE));
