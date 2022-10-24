@@ -61,6 +61,7 @@ import org.apache.pdfbox.pdmodel.font.PDType1Font;
 
 import com.google.common.base.Predicates;
 
+import io.github.toolfactory.narcissus.Narcissus;
 import net.miginfocom.swing.MigLayout;
 
 public class DocumentWriter implements ActionListener {
@@ -663,16 +664,48 @@ public class DocumentWriter implements ActionListener {
 
 	private static Color getForeground(final Component instance) {
 		//
-		try {
-			final Field field = Component.class.getDeclaredField("foreground");
-			if (field != null && !field.isAccessible()) {
-				field.setAccessible(true);
-			}
-			return cast(Color.class, field != null && instance != null ? field.get(instance) : null);
-		} catch (final NoSuchFieldException | IllegalAccessException e) {
-			LOG.severe(e.getMessage());
-		}
+		boolean isJava16 = false;
 		//
+		try {
+			//
+			isJava16 = Class.forName("java.net.UnixDomainSocketAddress") != null;
+			//
+		} catch (final ClassNotFoundException e) {
+			//
+			LOG.severe(e.getMessage());
+			//
+		} // try
+			//
+		try {
+			//
+			final Field field = Component.class.getDeclaredField("foreground");
+			//
+			if (field != null && !field.isAccessible()) {
+				//
+				if (!isJava16) {
+					//
+					field.setAccessible(true);
+					//
+				} else if (Modifier.isStatic(field.getModifiers())) {
+					//
+					return cast(Color.class, Narcissus.getStaticField(field));
+					//
+				} else {
+					//
+					return cast(Color.class, instance != null ? Narcissus.getField(instance, field) : null);
+					//
+				} // if
+					//
+			} // if
+				//
+			return cast(Color.class, field != null && instance != null ? field.get(instance) : null);
+			//
+		} catch (final NoSuchFieldException | IllegalAccessException e) {
+			//
+			LOG.severe(e.getMessage());
+			//
+		} // try
+			//
 		return null;
 		//
 	}
